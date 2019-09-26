@@ -7,9 +7,11 @@ var spotify = new Spotify(keys.spotify);
 var fs = require("fs");
 var axios = require("axios");
 var inquirer = require("inquirer");
-var bandsintown = require("bandsintown");
+// var bandsintown = require("bandsintown");
 var moment = require('moment');
 // moment().format();
+
+// ---- MAIN MENU ---- //
 var menu = function() {
   inquirer
     .prompt([
@@ -27,10 +29,10 @@ var menu = function() {
             concerts();
             break;
           case "Spotify This Song":
-            console.log("Songs!");
+            songSearch();
             break;
           case "Movie Information":
-            console.log("movies!");
+            movieSearch();
             break;
           case "do-what-it-says":
             console.log('what say do????!?!?');
@@ -41,6 +43,25 @@ var menu = function() {
 
 menu();
 
+var backToMenu = function() {
+  inquirer
+  .prompt([
+    {
+      type: "confirm",
+      message: "Back to Main Menu?",
+      name: "confirm"
+    }
+  ])
+    .then( res => {
+      if (res.confirm){
+        menu();
+      } else{
+        return;
+      }
+    })
+};
+
+// ---- bandsintown - CONCERT SEARCH ---- //
 var concerts = function() {
   inquirer
     .prompt([
@@ -51,7 +72,7 @@ var concerts = function() {
       }
     ])
       .then ( res => {
-        const artist = res.artist
+        const artist = res.artist.trim()
         axios
           .get("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp")
             .then( res => {
@@ -76,24 +97,6 @@ var concerts = function() {
       })
 };
 
-var backToMenu = function() {
-  inquirer
-  .prompt([
-    {
-      type: "confirm",
-      message: "Back to Main Menu?",
-      name: "confirm"
-    }
-  ])
-    .then( res => {
-      if (res.confirm){
-        menu();
-      } else{
-        return;
-      }
-    })
-};
-
 var concertsAgain = function() {
   inquirer
     .prompt([
@@ -111,4 +114,81 @@ var concertsAgain = function() {
           backToMenu();
         }
       })
+};
+
+// ---- Spotify - SONG SEARCH ---- //
+var songSearch = function() {
+  inquirer
+    .prompt([
+      {
+        message: "What song would you like to look up on Spotify?",
+        name: "song"
+      }
+    ])
+      .then( res => {
+        var song = res.song.trim();
+        if (song === ""){
+          spotify
+            .request('https://api.spotify.com/v1/tracks/0hrBpAOgrt8RXigk83LLNE')
+              .then( res => {
+              displaySongInfo(res);
+              })
+              .catch( err => {
+                console.log(err);
+              });
+        } else {
+          spotify
+            .search(
+              {
+                type: 'track',
+                query: song,
+                limit: 10
+              }
+            )
+              .then( res => {
+                console.log('\n------------------------------------------------------------------------------------\n')
+                for (let i = 0; i < res.tracks.items.length; i++){
+                  var song = res.tracks.items[i];
+                  displaySongInfo(song);
+                  console.log('\n------------------------------------------------------------------------------------\n')
+                }
+                songAgain();
+              })
+              .catch( err => {
+                console.log(err);
+              })
+        }
+      })
+};
+
+var displaySongInfo = function(data) {
+  console.log(`Artist: ${data.artists[0].name}`)
+  console.log(`Song: "${data.name}"`)
+  console.log(`Album: ${data.album.name}`)
+  console.log(`Preview URL: \n\t${data.preview_url}`)
+};
+
+var songAgain = function() {
+  inquirer
+    .prompt([
+      {
+        type: "confirm",
+        message: "Would you like to search for another song?",
+        name: "confirm"
+        
+      }
+    ])
+      .then( res => {
+        if (res.confirm){
+          songSearch();
+        } else {
+          backToMenu();
+        }
+      })
+};
+
+// ---- OMDb - MOVIE SEARCH ---- //
+
+var movieSearch = function() {
+
 };
