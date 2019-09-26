@@ -37,7 +37,7 @@ var menu = function() {
           case "do-what-it-says":
             doWhatItSays();
             break;
-          case "Exoit":
+          case "Exit":
             return;
         }
       });
