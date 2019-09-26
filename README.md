@@ -45,3 +45,5 @@ This project utilizes `inquirer` to navigate through a prompt-based menu system 
 
 ### Implimentation
 I have implimented ways to cycle back through the menu system as well as accounting for issues that might come up with blank user enteries, extra spaces as well as zero query returns.  I found that `inquirer` is incredibly useful for user accessibility.  The main challenge I had was structuring the menu system as well as creating some dynamic response such as under the goAgain function.
+
+[Video Demo Link](https://www.youtube.com/watch?v=WVxDGz5Debw)
