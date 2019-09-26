@@ -1,5 +1,6 @@
-# LIRI
-This program is meant to be run on a command-line and has been constructed as part of an exercise exploring the usage NODEjs and integrating three different API technologies into a functioning app.
+# LIRI Bot
+This program is meant to be run on a command-line and has been constructed as part of an exercise exploring the usage NODE-js and integrating three different API technologies into a functioning app.
+[Project on GitHub](https://github.com/andrew-jolivette/liri-node-app)
 
 ## Technologies Utilized
 * [bandsintown](https://www.npmjs.com/package/bandsintown)
@@ -25,3 +26,22 @@ SPOTIFY_ID=your-spotify-id
 SPOTIFY_SECRET=your-spotify-secret
 
 ```
+
+### Running Program
+Navigate to your where you downloaded the program in the CLI and type:
+```
+node liri.js
+```
+If you want to switch the commands in `random.txt` make sure the to only use the following inputs before the first comma:
+
+* concert-this
+* spotify-this-song
+* movie-this
+
+Followed by what you want to search after the comma. Unfortunately, at this time this wont let you input multiple commands.
+
+## Overview
+This project utilizes `inquirer` to navigate through a prompt-based menu system allowing them to choose between looking up an artist/band and finding concert dates and locations, searching for a song on spotify and lastly looking up a movie and getting back that movie's information.
+
+### Implimentation
+I have implimented ways to cycle back through the menu system as well as accounting for issues that might come up with blank user enteries, extra spaces as well as zero query returns.  I found that `inquirer` is incredibly useful for user accessibility.  The main challenge I had was structuring the menu system as well as creating some dynamic response such as under the goAgain function.
