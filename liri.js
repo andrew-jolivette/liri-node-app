@@ -61,8 +61,39 @@ var backToMenu = function() {
     })
 };
 
+var searchTopic = "";
+var goAgain = function() {
+  inquirer
+    .prompt([
+      {
+        type: "confirm",
+        message: `Would you like to search for another ${searchTopic}?`,
+        name: "confirm"
+        
+      }
+    ])
+      .then( res => {
+        if (res.confirm){
+          switch(searchTopic){
+            case "artist":
+              concerts();
+              break;
+            case "song":
+              songSearch();
+              break;
+            case "movie":
+              movieSearch();
+              break;
+          }
+        } else {
+          backToMenu();
+        }
+      })
+};
+
 // ---- bandsintown - CONCERT SEARCH ---- //
 var concerts = function() {
+  searchTopic = "artist";
   inquirer
     .prompt([
       {
@@ -89,7 +120,7 @@ var concerts = function() {
                 console.log(`Time: ${moment(info[i].date).format("dddd, MMMM Do YYYY, h:mm a")}`)
                 console.log('\n-------------------------------------------------------\n')
               }
-              concertsAgain();
+              goAgain();
             })
             .catch( err => {
               console.log(err);
@@ -97,27 +128,9 @@ var concerts = function() {
       })
 };
 
-var concertsAgain = function() {
-  inquirer
-    .prompt([
-      {
-        type: "confirm",
-        message: "Would you like to search for another artist?",
-        name: "confirm"
-        
-      }
-    ])
-      .then( res => {
-        if (res.confirm){
-          concerts();
-        } else {
-          backToMenu();
-        }
-      })
-};
-
 // ---- Spotify - SONG SEARCH ---- //
 var songSearch = function() {
+  searchTopic = "song";
   inquirer
     .prompt([
       {
@@ -152,7 +165,7 @@ var songSearch = function() {
                   displaySongInfo(song);
                   console.log('\n------------------------------------------------------------------------------------\n')
                 }
-                songAgain();
+                goAgain();
               })
               .catch( err => {
                 console.log(err);
@@ -168,27 +181,37 @@ var displaySongInfo = function(data) {
   console.log(`Preview URL: \n\t${data.preview_url}`)
 };
 
-var songAgain = function() {
+// ---- OMDb - MOVIE SEARCH ---- //
+var movieSearch = function() {
+  searchTopic = "movie";
   inquirer
     .prompt([
       {
-        type: "confirm",
-        message: "Would you like to search for another song?",
-        name: "confirm"
-        
+        message: "What movie would you like to look up on OMDb?",
+        name: "movie"
       }
     ])
       .then( res => {
-        if (res.confirm){
-          songSearch();
-        } else {
-          backToMenu();
-        }
+        const movie = res.movie.trim();
+        axios
+          .get(`http://www.omdbapi.com/?t=${movie}&y=&plot=short&apikey=trilogy`)
+            .then( res => {
+              var data = res.data;
+              // console.log(JSON.stringify(res.data, null, 2))
+              console.log('==============================================================')
+              console.log(`\nMovie Title: "${data.Title}"\n`);
+              console.log(`Release Year: ${data.Year}\n`);
+              console.log(`${data.Ratings[0].Source} Rating: ${data.Ratings[0].Value}\n`);
+              console.log(`${data.Ratings[1].Source} Rating: ${data.Ratings[2].Value}\n`);
+              console.log(`Country of Production: ${data.Country}\n`);
+              console.log(`Language: ${data.Language}\n`);
+              console.log(`Plot Summary:\n${data.Plot}\n`);
+              console.log(`Actors:${data.Actors}\n`);
+              console.log('==============================================================')
+              goAgain();
+            })
+            .catch( err => {
+              console.log(err);
+            })
       })
-};
-
-// ---- OMDb - MOVIE SEARCH ---- //
-
-var movieSearch = function() {
-
 };
