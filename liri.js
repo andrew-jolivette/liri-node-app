@@ -111,7 +111,7 @@ var concerts = function() {
           return;
         }
         axios
-          .get("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp")
+          .get("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=anyplaceholderwilldo")
             .then( res => {
               const info = res.data;
               if (info.length < 1){
@@ -256,7 +256,7 @@ var doWhatItSays = function() {
             return;
           }
           axios
-            .get("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp")
+            .get("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=anyplaceholderwilldo")
               .then( res => {
                 const info = res.data;
                 if (info.length < 1){
